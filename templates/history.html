@@ -268,8 +268,8 @@
                 // UK row
                 if (pred.uk_available) {
                     // Convert pence to pounds
-                    const ukUnleaded = (pred.uk_unleaded / 100).toFixed(3);
-                    const ukDiesel = (pred.uk_diesel / 100).toFixed(3);
+                    const ukUnleaded = (pred.uk_unleaded / 100).toFixed(2);
+                    const ukDiesel = (pred.uk_diesel / 100).toFixed(2);
                     
                     html += `
                         <tr>
@@ -285,16 +285,16 @@
                 // US row
                 if (pred.us_available) {
                     // Convert cents to dollars
-                    const usRegular = (pred.us_regular / 100).toFixed(3);
-                    const usDiesel = (pred.us_diesel / 100).toFixed(3);
+                    const usRegular = (pred.us_regular / 100).toFixed(2);
+                    const usDiesel = (pred.us_diesel / 100).toFixed(2);
                     
                     html += `
                         <tr>
                             <td class="date-cell">${genDate}</td>
                             <td>${predDate}</td>
                             <td><span class="country-label us-label">🇺🇸 US</span></td>
-                            <td>${usRegular}</td>
-                            <td>${usDiesel}</td>
+                            <td>$${usRegular}</td>
+                            <td>$${usDiesel}</td>
                         </tr>
                     `;
                 }
