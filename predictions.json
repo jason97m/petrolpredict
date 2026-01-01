@@ -1,0 +1,49 @@
+{
+  "uk": {
+    "predictions": {
+      "unleaded": {
+        "predicted_price": 135.46,
+        "current_price": 136.23,
+        "change": -0.77,
+        "confidence_lower": 134.25,
+        "confidence_upper": 136.68,
+        "num_iterations": 10
+      },
+      "diesel": {
+        "predicted_price": 146.05,
+        "current_price": 145.45,
+        "change": 0.6,
+        "confidence_lower": 144.12,
+        "confidence_upper": 147.99,
+        "num_iterations": 10
+      }
+    },
+    "currency": "pence per litre",
+    "available": true
+  },
+  "us": {
+    "predictions": {
+      "regular": {
+        "predicted_price": 331.69,
+        "current_price": 344.25,
+        "change": -12.56,
+        "confidence_lower": 323.8,
+        "confidence_upper": 339.58,
+        "num_iterations": 10
+      },
+      "diesel": {
+        "predicted_price": 369.64,
+        "current_price": 372.18,
+        "change": -2.53,
+        "confidence_lower": 358.31,
+        "confidence_upper": 380.98,
+        "num_iterations": 10
+      }
+    },
+    "currency": "cents per gallon",
+    "available": true
+  },
+  "generated_at": "2025-12-31 19:23:00",
+  "prediction_date": "2026-01-07",
+  "num_iterations": 10
+}

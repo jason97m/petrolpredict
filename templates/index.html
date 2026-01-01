@@ -50,6 +50,26 @@
             font-weight: 500;
         }
         
+        .nav-links {
+            margin-top: 15px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            margin: 0 5px;
+            font-size: 0.95em;
+            transition: background 0.3s;
+            display: inline-block;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
         .predictions-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -173,6 +193,9 @@
             <h1>⛽ PetrolPredict</h1>
             <p class="subtitle">Fuel Price Predictions for UK & US</p>
             <div class="date-range" id="date-range">Loading...</div>
+            <div class="nav-links">
+                <a href="/history">📊 View Prediction History</a>
+            </div>
         </header>
         
         <div id="content">

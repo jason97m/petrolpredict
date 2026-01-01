@@ -49,3 +49,8 @@ instance/
 
 # Logs
 *.log
+
+# Keep predictions files
+!predictions.json
+!predictions_history/
+!predictions_history/*.json

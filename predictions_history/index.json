@@ -1,0 +1,15 @@
+{
+  "predictions": [
+    {
+      "file": "predictions_20251231_192300.json",
+      "generated_at": "2025-12-31 19:23:00",
+      "prediction_date": "2026-01-07",
+      "uk_available": true,
+      "us_available": true,
+      "uk_unleaded": 135.46,
+      "uk_diesel": 146.05,
+      "us_regular": 331.69,
+      "us_diesel": 369.64
+    }
+  ]
+}
