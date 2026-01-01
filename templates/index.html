@@ -267,24 +267,31 @@
                 const unleadedChange = unleaded.change >= 0 ? 'positive' : 'negative';
                 const unleadedSymbol = unleaded.change >= 0 ? '↑' : '↓';
                 
+                // Convert pence to pounds
+                const unleadedPredicted = (unleaded.predicted_price / 100).toFixed(2);
+                const unleadedCurrent = (unleaded.current_price / 100).toFixed(2);
+                const unleadedChangeVal = Math.abs(unleaded.change / 100).toFixed(2);
+                const unleadedLower = (unleaded.confidence_lower / 100).toFixed(2);
+                const unleadedUpper = (unleaded.confidence_upper / 100).toFixed(2);
+                
                 html += `
                     <div class="prediction-card">
                         <div class="fuel-type">Unleaded Petrol</div>
-                        <div class="price-display">${unleaded.predicted_price}p</div>
+                        <div class="price-display">£${unleadedPredicted}</div>
                         <div class="price-label">Predicted price per litre</div>
                         
                         <div class="current-price">
                             <span>Current Price:</span>
-                            <strong>${unleaded.current_price}p</strong>
+                            <strong>£${unleadedCurrent}</strong>
                         </div>
                         
                         <div class="change ${unleadedChange}">
-                            ${unleadedSymbol} ${Math.abs(unleaded.change)}p change expected
+                            ${unleadedSymbol} £${unleadedChangeVal} change expected
                         </div>
                         
                         <div class="confidence">
                             <strong>Confidence Range:</strong><br>
-                            ${unleaded.confidence_lower}p - ${unleaded.confidence_upper}p
+                            £${unleadedLower} - £${unleadedUpper}
                         </div>
                     </div>
                 `;
@@ -294,24 +301,31 @@
                 const ukDieselChange = ukDiesel.change >= 0 ? 'positive' : 'negative';
                 const ukDieselSymbol = ukDiesel.change >= 0 ? '↑' : '↓';
                 
+                // Convert pence to pounds
+                const ukDieselPredicted = (ukDiesel.predicted_price / 100).toFixed(2);
+                const ukDieselCurrent = (ukDiesel.current_price / 100).toFixed(2);
+                const ukDieselChangeVal = Math.abs(ukDiesel.change / 100).toFixed(2);
+                const ukDieselLower = (ukDiesel.confidence_lower / 100).toFixed(2);
+                const ukDieselUpper = (ukDiesel.confidence_upper / 100).toFixed(2);
+                
                 html += `
                     <div class="prediction-card">
                         <div class="fuel-type">Diesel</div>
-                        <div class="price-display">${ukDiesel.predicted_price}p</div>
+                        <div class="price-display">£${ukDieselPredicted}</div>
                         <div class="price-label">Predicted price per litre</div>
                         
                         <div class="current-price">
                             <span>Current Price:</span>
-                            <strong>${ukDiesel.current_price}p</strong>
+                            <strong>£${ukDieselCurrent}</strong>
                         </div>
                         
                         <div class="change ${ukDieselChange}">
-                            ${ukDieselSymbol} ${Math.abs(ukDiesel.change)}p change expected
+                            ${ukDieselSymbol} £${ukDieselChangeVal} change expected
                         </div>
                         
                         <div class="confidence">
                             <strong>Confidence Range:</strong><br>
-                            ${ukDiesel.confidence_lower}p - ${ukDiesel.confidence_upper}p
+                            £${ukDieselLower} - £${ukDieselUpper}
                         </div>
                     </div>
                 `;
@@ -340,24 +354,31 @@
                 const regularChange = regular.change >= 0 ? 'positive' : 'negative';
                 const regularSymbol = regular.change >= 0 ? '↑' : '↓';
                 
+                // Convert cents to dollars
+                const regularPredicted = (regular.predicted_price / 100).toFixed(2);
+                const regularCurrent = (regular.current_price / 100).toFixed(2);
+                const regularChangeVal = Math.abs(regular.change / 100).toFixed(2);
+                const regularLower = (regular.confidence_lower / 100).toFixed(2);
+                const regularUpper = (regular.confidence_upper / 100).toFixed(2);
+                
                 html += `
                     <div class="prediction-card">
                         <div class="fuel-type">Regular Gasoline</div>
-                        <div class="price-display">${regular.predicted_price}¢</div>
+                        <div class="price-display">$${regularPredicted}</div>
                         <div class="price-label">Predicted price per gallon</div>
                         
                         <div class="current-price">
                             <span>Current Price:</span>
-                            <strong>${regular.current_price}¢</strong>
+                            <strong>$${regularCurrent}</strong>
                         </div>
                         
                         <div class="change ${regularChange}">
-                            ${regularSymbol} ${Math.abs(regular.change)}¢ change expected
+                            ${regularSymbol} $${regularChangeVal} change expected
                         </div>
                         
                         <div class="confidence">
                             <strong>Confidence Range:</strong><br>
-                            ${regular.confidence_lower}¢ - ${regular.confidence_upper}¢
+                            $${regularLower} - $${regularUpper}
                         </div>
                     </div>
                 `;
@@ -367,24 +388,31 @@
                 const usDieselChange = usDiesel.change >= 0 ? 'positive' : 'negative';
                 const usDieselSymbol = usDiesel.change >= 0 ? '↑' : '↓';
                 
+                // Convert cents to dollars
+                const usDieselPredicted = (usDiesel.predicted_price / 100).toFixed(2);
+                const usDieselCurrent = (usDiesel.current_price / 100).toFixed(2);
+                const usDieselChangeVal = Math.abs(usDiesel.change / 100).toFixed(2);
+                const usDieselLower = (usDiesel.confidence_lower / 100).toFixed(2);
+                const usDieselUpper = (usDiesel.confidence_upper / 100).toFixed(2);
+                
                 html += `
                     <div class="prediction-card">
                         <div class="fuel-type">Diesel</div>
-                        <div class="price-display">${usDiesel.predicted_price}¢</div>
+                        <div class="price-display">$${usDieselPredicted}</div>
                         <div class="price-label">Predicted price per gallon</div>
                         
                         <div class="current-price">
                             <span>Current Price:</span>
-                            <strong>${usDiesel.current_price}¢</strong>
+                            <strong>$${usDieselCurrent}</strong>
                         </div>
                         
                         <div class="change ${usDieselChange}">
-                            ${usDieselSymbol} ${Math.abs(usDiesel.change)}¢ change expected
+                            ${usDieselSymbol} $${usDieselChangeVal} change expected
                         </div>
                         
                         <div class="confidence">
                             <strong>Confidence Range:</strong><br>
-                            ${usDiesel.confidence_lower}¢ - ${usDiesel.confidence_upper}¢
+                            $${usDieselLower} - $${usDieselUpper}
                         </div>
                     </div>
                 `;
@@ -400,7 +428,7 @@
                 <div class="info-box">
                     <h3 style="margin-bottom: 15px;">About These Predictions</h3>
                     <p>These predictions are based on historical fuel price data using a moving average and trend analysis. 
-                    UK prices are shown in pence per litre, US prices in cents per gallon. 
+                    UK prices are shown in pounds (£) per litre, US prices in dollars ($) per gallon. 
                     Predictions are for guidance only and actual prices may vary based on market conditions, 
                     global oil prices, and other factors.</p>
                 </div>

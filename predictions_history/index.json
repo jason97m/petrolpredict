@@ -10,6 +10,17 @@
       "uk_diesel": 146.05,
       "us_regular": 331.69,
       "us_diesel": 369.64
+    },
+    {
+      "file": "predictions_20260101_105418.json",
+      "generated_at": "2026-01-01 10:54:18",
+      "prediction_date": "2026-01-08",
+      "uk_available": true,
+      "us_available": true,
+      "uk_unleaded": 136.44,
+      "uk_diesel": 145.47,
+      "us_regular": 336.52,
+      "us_diesel": 399.56
     }
   ]
 }
