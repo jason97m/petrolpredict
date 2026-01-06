@@ -3,446 +3,669 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PetrolPredict - UK Fuel Price Predictions</title>
+    <title>Fuel Price Predictor - UK & US</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-        
+
         .container {
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
         }
-        
+
         header {
             text-align: center;
             color: white;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            padding: 20px;
         }
-        
+
         h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
-        
+
         .subtitle {
-            font-size: 1.2em;
-            opacity: 0.9;
-            margin-bottom: 15px;
-        }
-        
-        .date-range {
             font-size: 1.1em;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 12px 25px;
-            border-radius: 25px;
-            display: inline-block;
-            margin-top: 10px;
-            font-weight: 500;
+            opacity: 0.9;
         }
-        
-        .nav-links {
-            margin-top: 15px;
+
+        .region-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
         }
-        
-        .nav-links a {
+
+        .tab-button {
+            padding: 15px 40px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
             color: white;
-            text-decoration: none;
-            padding: 8px 18px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            margin: 0 5px;
-            font-size: 0.95em;
-            transition: background 0.3s;
-            display: inline-block;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: bold;
         }
-        
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.3);
+
+        .tab-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
         }
-        
-        .predictions-grid {
+
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .region-content {
+            display: none;
+        }
+
+        .region-content.active {
+            display: block;
+        }
+
+        .dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
-        
-        .country-section {
-            margin-bottom: 40px;
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
-        .country-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: white;
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
             font-size: 2em;
-            margin-bottom: 20px;
             font-weight: bold;
+            color: #333;
         }
-        
-        .flag {
-            font-size: 1.5em;
+
+        .stat-unit {
+            font-size: 0.6em;
+            color: #999;
+            margin-left: 5px;
         }
-        
+
         .prediction-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .prediction-card .stat-value {
+            color: white;
+            font-size: 2.5em;
+        }
+
+        .prediction-card .stat-label {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        .info-section {
             background: white;
             border-radius: 15px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        
-        .fuel-type {
-            font-size: 1.5em;
-            color: #667eea;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-        
-        .price-display {
-            font-size: 3em;
-            color: #2d3748;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .price-label {
-            color: #718096;
-            font-size: 0.9em;
-            margin-bottom: 20px;
-        }
-        
-        .current-price {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            background: #f7fafc;
-            border-radius: 8px;
+
+        .info-section h2 {
+            color: #333;
             margin-bottom: 15px;
-        }
-        
-        .change {
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-        }
-        
-        .change.positive {
-            background: #fed7d7;
-            color: #c53030;
-        }
-        
-        .change.negative {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-        
-        .confidence {
-            margin-top: 15px;
-            padding: 15px;
-            background: #edf2f7;
-            border-radius: 8px;
-            font-size: 0.9em;
-        }
-        
-        .info-box {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            color: #2d3748;
-        }
-        
-        .loading {
-            text-align: center;
-            color: white;
             font-size: 1.5em;
         }
-        
-        .error {
-            background: #fed7d7;
-            color: #c53030;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
-        
-        .meta-info {
+
+        .info-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .trend-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .trend-up {
+            background: #fee;
+            color: #c33;
+        }
+
+        .trend-down {
+            background: #efe;
+            color: #3c3;
+        }
+
+        .trend-stable {
+            background: #fef8e7;
+            color: #f39c12;
+        }
+
+        footer {
             text-align: center;
             color: white;
-            margin-top: 20px;
-            font-size: 0.9em;
+            margin-top: 30px;
+            padding: 20px;
             opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .chart-wrapper {
+                height: 300px;
+            }
+
+            .stat-value {
+                font-size: 1.5em;
+            }
+
+            .tab-button {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+        }
+
+        .model-info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .model-info p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .region-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        .uk-badge {
+            background: #3498db;
+            color: white;
+        }
+
+        .us-badge {
+            background: #e74c3c;
+            color: white;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>⛽ PetrolPredict</h1>
-            <p class="subtitle">Fuel Price Predictions for UK & US</p>
-            <div class="date-range" id="date-range">Loading...</div>
-            <div class="nav-links">
-                <a href="/history">📊 View Prediction History</a>
-            </div>
+            <h1>⛽ Fuel Price Predictor</h1>
+            <p class="subtitle">Advanced ML-powered fuel price forecasting for UK & US</p>
         </header>
-        
-        <div id="content">
-            <div class="loading">Loading predictions...</div>
+
+        <div class="region-tabs">
+            <button class="tab-button active" onclick="switchRegion('uk')">
+                🇬🇧 United Kingdom
+            </button>
+            <button class="tab-button" onclick="switchRegion('us')">
+                🇺🇸 United States
+            </button>
         </div>
-        
-        <div class="meta-info" id="meta-info"></div>
-    </div>
-    
-    <script>
-        async function loadPredictions() {
-            try {
-                const response = await fetch('/api/predictions');
-                const data = await response.json();
-                
-                if (data.error) {
-                    document.getElementById('content').innerHTML = `
-                        <div class="error">
-                            <h3>Error Loading Predictions</h3>
-                            <p>${data.error}</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                displayPredictions(data);
-            } catch (error) {
-                document.getElementById('content').innerHTML = `
-                    <div class="error">
-                        <h3>Error Loading Predictions</h3>
-                        <p>Unable to fetch fuel price predictions. Please try again later.</p>
+
+        <!-- UK CONTENT -->
+        <div id="uk-content" class="region-content active">
+            <div class="dashboard">
+                <div class="stat-card prediction-card">
+                    <div class="stat-label">Predicted Price ({{ pred_date }})</div>
+                    <div class="stat-value">
+                        {{ uk_pred_price }}<span class="stat-unit">p/L</span>
                     </div>
-                `;
-            }
-        }
-        
-        function displayPredictions(data) {
-            // Update date range at the top
-            const predictionDate = new Date(data.prediction_date);
-            const weekEnd = new Date(predictionDate);
-            weekEnd.setDate(weekEnd.getDate() + 6); // Add 6 days to get end of week
-            
-            const formatDate = (date) => {
-                const options = { month: 'short', day: 'numeric', year: 'numeric' };
-                return date.toLocaleDateString('en-US', options);
-            };
-            
-            document.getElementById('date-range').innerHTML = `
-                📅 Prediction Week: ${formatDate(predictionDate)} - ${formatDate(weekEnd)}
-            `;
-            
-            let html = '';
-            
-            // UK Section
-            if (data.uk.available && data.uk.predictions) {
-                html += `
-                    <div class="country-section">
-                        <div class="country-header">
-                            <span class="flag">🇬🇧</span>
-                            <span>United Kingdom</span>
-                        </div>
-                        <div class="predictions-grid">
-                `;
-                
-                const ukPredictions = data.uk.predictions;
-                
-                // UK Unleaded
-                const unleaded = ukPredictions.unleaded;
-                const unleadedChange = unleaded.change >= 0 ? 'positive' : 'negative';
-                const unleadedSymbol = unleaded.change >= 0 ? '↑' : '↓';
-                
-                // Convert pence to pounds
-                const unleadedPredicted = (unleaded.predicted_price / 100).toFixed(2);
-                const unleadedCurrent = (unleaded.current_price / 100).toFixed(2);
-                const unleadedChangeVal = Math.abs(unleaded.change / 100).toFixed(2);
-                const unleadedLower = (unleaded.confidence_lower / 100).toFixed(2);
-                const unleadedUpper = (unleaded.confidence_upper / 100).toFixed(2);
-                
-                html += `
-                    <div class="prediction-card">
-                        <div class="fuel-type">Unleaded Petrol</div>
-                        <div class="price-display">£${unleadedPredicted}</div>
-                        <div class="price-label">Predicted price per litre</div>
-                        
-                        <div class="current-price">
-                            <span>Current Price:</span>
-                            <strong>£${unleadedCurrent}</strong>
-                        </div>
-                        
-                        <div class="change ${unleadedChange}">
-                            ${unleadedSymbol} £${unleadedChangeVal} change expected
-                        </div>
-                        
-                        <div class="confidence">
-                            <strong>Confidence Range:</strong><br>
-                            £${unleadedLower} - £${unleadedUpper}
-                        </div>
-                    </div>
-                `;
-                
-                // UK Diesel
-                const ukDiesel = ukPredictions.diesel;
-                const ukDieselChange = ukDiesel.change >= 0 ? 'positive' : 'negative';
-                const ukDieselSymbol = ukDiesel.change >= 0 ? '↑' : '↓';
-                
-                // Convert pence to pounds
-                const ukDieselPredicted = (ukDiesel.predicted_price / 100).toFixed(2);
-                const ukDieselCurrent = (ukDiesel.current_price / 100).toFixed(2);
-                const ukDieselChangeVal = Math.abs(ukDiesel.change / 100).toFixed(2);
-                const ukDieselLower = (ukDiesel.confidence_lower / 100).toFixed(2);
-                const ukDieselUpper = (ukDiesel.confidence_upper / 100).toFixed(2);
-                
-                html += `
-                    <div class="prediction-card">
-                        <div class="fuel-type">Diesel</div>
-                        <div class="price-display">£${ukDieselPredicted}</div>
-                        <div class="price-label">Predicted price per litre</div>
-                        
-                        <div class="current-price">
-                            <span>Current Price:</span>
-                            <strong>£${ukDieselCurrent}</strong>
-                        </div>
-                        
-                        <div class="change ${ukDieselChange}">
-                            ${ukDieselSymbol} £${ukDieselChangeVal} change expected
-                        </div>
-                        
-                        <div class="confidence">
-                            <strong>Confidence Range:</strong><br>
-                            £${ukDieselLower} - £${ukDieselUpper}
-                        </div>
-                    </div>
-                `;
-                
-                html += `
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // US Section
-            if (data.us.available && data.us.predictions) {
-                html += `
-                    <div class="country-section">
-                        <div class="country-header">
-                            <span class="flag">🇺🇸</span>
-                            <span>United States</span>
-                        </div>
-                        <div class="predictions-grid">
-                `;
-                
-                const usPredictions = data.us.predictions;
-                
-                // US Regular
-                const regular = usPredictions.regular;
-                const regularChange = regular.change >= 0 ? 'positive' : 'negative';
-                const regularSymbol = regular.change >= 0 ? '↑' : '↓';
-                
-                // Convert cents to dollars
-                const regularPredicted = (regular.predicted_price / 100).toFixed(2);
-                const regularCurrent = (regular.current_price / 100).toFixed(2);
-                const regularChangeVal = Math.abs(regular.change / 100).toFixed(2);
-                const regularLower = (regular.confidence_lower / 100).toFixed(2);
-                const regularUpper = (regular.confidence_upper / 100).toFixed(2);
-                
-                html += `
-                    <div class="prediction-card">
-                        <div class="fuel-type">Regular Gasoline</div>
-                        <div class="price-display">$${regularPredicted}</div>
-                        <div class="price-label">Predicted price per gallon</div>
-                        
-                        <div class="current-price">
-                            <span>Current Price:</span>
-                            <strong>$${regularCurrent}</strong>
-                        </div>
-                        
-                        <div class="change ${regularChange}">
-                            ${regularSymbol} $${regularChangeVal} change expected
-                        </div>
-                        
-                        <div class="confidence">
-                            <strong>Confidence Range:</strong><br>
-                            $${regularLower} - $${regularUpper}
-                        </div>
-                    </div>
-                `;
-                
-                // US Diesel
-                const usDiesel = usPredictions.diesel;
-                const usDieselChange = usDiesel.change >= 0 ? 'positive' : 'negative';
-                const usDieselSymbol = usDiesel.change >= 0 ? '↑' : '↓';
-                
-                // Convert cents to dollars
-                const usDieselPredicted = (usDiesel.predicted_price / 100).toFixed(2);
-                const usDieselCurrent = (usDiesel.current_price / 100).toFixed(2);
-                const usDieselChangeVal = Math.abs(usDiesel.change / 100).toFixed(2);
-                const usDieselLower = (usDiesel.confidence_lower / 100).toFixed(2);
-                const usDieselUpper = (usDiesel.confidence_upper / 100).toFixed(2);
-                
-                html += `
-                    <div class="prediction-card">
-                        <div class="fuel-type">Diesel</div>
-                        <div class="price-display">$${usDieselPredicted}</div>
-                        <div class="price-label">Predicted price per gallon</div>
-                        
-                        <div class="current-price">
-                            <span>Current Price:</span>
-                            <strong>$${usDieselCurrent}</strong>
-                        </div>
-                        
-                        <div class="change ${usDieselChange}">
-                            ${usDieselSymbol} $${usDieselChangeVal} change expected
-                        </div>
-                        
-                        <div class="confidence">
-                            <strong>Confidence Range:</strong><br>
-                            $${usDieselLower} - $${usDieselUpper}
-                        </div>
-                    </div>
-                `;
-                
-                html += `
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Add info box
-            html += `
-                <div class="info-box">
-                    <h3 style="margin-bottom: 15px;">About These Predictions</h3>
-                    <p>These predictions are based on historical fuel price data using a moving average and trend analysis. 
-                    UK prices are shown in pounds (£) per litre, US prices in dollars ($) per gallon. 
-                    Predictions are for guidance only and actual prices may vary based on market conditions, 
-                    global oil prices, and other factors.</p>
+                    {% set uk_change = uk_pred_price - stats.uk.current_price %}
+                    {% if uk_change > 0 %}
+                        <span class="trend-indicator trend-up">↑ +{{ "%.2f"|format(uk_change) }}p</span>
+                    {% elif uk_change < 0 %}
+                        <span class="trend-indicator trend-down">↓ {{ "%.2f"|format(uk_change) }}p</span>
+                    {% else %}
+                        <span class="trend-indicator trend-stable">→ Stable</span>
+                    {% endif %}
                 </div>
-            `;
-            
-            document.getElementById('content').innerHTML = html;
-            
-            document.getElementById('meta-info').innerHTML = `
-                Last updated: ${data.last_updated} | Prediction for: ${data.prediction_date}
-            `;
+
+                <div class="stat-card">
+                    <div class="stat-label">Current Price</div>
+                    <div class="stat-value">{{ stats.uk.current_price }}<span class="stat-unit">p/L</span></div>
+                    <small style="color: #999;">As of {{ stats.uk.last_update }}</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Year Average</div>
+                    <div class="stat-value">{{ stats.uk.avg_year }}<span class="stat-unit">p/L</span></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Year Range</div>
+                    <div class="stat-value" style="font-size: 1.3em;">
+                        {{ stats.uk.min_year }} - {{ stats.uk.max_year }}<span class="stat-unit">p/L</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h2 style="margin-bottom: 20px; color: #333;">
+                    UK Price Trends (Last 6 Months)
+                    <span class="region-badge uk-badge">UK</span>
+                </h2>
+                <div class="chart-wrapper">
+                    <canvas id="ukChart"></canvas>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>📊 UK Prediction Details</h2>
+                <div class="model-info">
+                    <p><strong>Prediction Method:</strong> Ensemble model combining Random Forest (70%) and Linear Regression (30%)</p>
+                    <p><strong>Random Forest Prediction:</strong> {{ uk_rf_pred }} pence/liter</p>
+                    <p><strong>Linear Regression Prediction:</strong> {{ uk_lr_pred }} pence/liter</p>
+                    <p><strong>Final Ensemble Prediction:</strong> {{ uk_pred_price }} pence/liter</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Primary Factors</strong>
+                        Brent crude oil prices, historical UK prices, US market correlation
+                    </div>
+                    <div class="info-item">
+                        <strong>Features Used</strong>
+                        Multiple lag periods, moving averages, price changes, seasonal patterns
+                    </div>
+                    <div class="info-item">
+                        <strong>Model Type</strong>
+                        Random Forest Regressor with 100 trees
+                    </div>
+                    <div class="info-item">
+                        <strong>Update Frequency</strong>
+                        Weekly data updates
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- US CONTENT -->
+        <div id="us-content" class="region-content">
+            <div class="dashboard">
+                <div class="stat-card prediction-card">
+                    <div class="stat-label">Predicted Price ({{ pred_date }})</div>
+                    <div class="stat-value">
+                        ${{ us_pred_price }}<span class="stat-unit">/gal</span>
+                    </div>
+                    {% set us_change = us_pred_price - stats.us.current_price %}
+                    {% if us_change > 0 %}
+                        <span class="trend-indicator trend-up">↑ +${{ "%.2f"|format(us_change) }}</span>
+                    {% elif us_change < 0 %}
+                        <span class="trend-indicator trend-down">↓ ${{ "%.2f"|format(us_change) }}</span>
+                    {% else %}
+                        <span class="trend-indicator trend-stable">→ Stable</span>
+                    {% endif %}
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Current Price</div>
+                    <div class="stat-value">${{ stats.us.current_price }}<span class="stat-unit">/gal</span></div>
+                    <small style="color: #999;">As of {{ stats.us.last_update }}</small>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Year Average</div>
+                    <div class="stat-value">${{ stats.us.avg_year }}<span class="stat-unit">/gal</span></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Year Range</div>
+                    <div class="stat-value" style="font-size: 1.3em;">
+                        ${{ stats.us.min_year }} - ${{ stats.us.max_year }}<span class="stat-unit">/gal</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h2 style="margin-bottom: 20px; color: #333;">
+                    US Price Trends (Last 6 Months)
+                    <span class="region-badge us-badge">US</span>
+                </h2>
+                <div class="chart-wrapper">
+                    <canvas id="usChart"></canvas>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>📊 US Prediction Details</h2>
+                <div class="model-info">
+                    <p><strong>Prediction Method:</strong> Ensemble model combining Random Forest (70%) and Linear Regression (30%)</p>
+                    <p><strong>Random Forest Prediction:</strong> ${{ us_rf_pred }} per gallon</p>
+                    <p><strong>Linear Regression Prediction:</strong> ${{ us_lr_pred }} per gallon</p>
+                    <p><strong>Final Ensemble Prediction:</strong> ${{ us_pred_price }} per gallon</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Primary Factors</strong>
+                        Brent crude oil prices, historical US prices, UK market correlation
+                    </div>
+                    <div class="info-item">
+                        <strong>Features Used</strong>
+                        Multiple lag periods, moving averages, price changes, seasonal patterns
+                    </div>
+                    <div class="info-item">
+                        <strong>Model Type</strong>
+                        Random Forest Regressor with 100 trees
+                    </div>
+                    <div class="info-item">
+                        <strong>Update Frequency</strong>
+                        Weekly data updates
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Data updated weekly | Predictions are estimates based on historical patterns</p>
+            <p>© 2026 Fuel Price Predictor - UK & US Edition</p>
+        </footer>
+    </div>
+
+    <script>
+        // Data from Flask
+        const dataUK = {{ data_uk|tojson }};
+        const dataUS = {{ data_us|tojson }};
+
+        // Switch between regions
+        function switchRegion(region) {
+            // Update tabs
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.region-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(region + '-content').classList.add('active');
         }
-        
-        // Load predictions on page load
-        loadPredictions();
+
+        // UK Chart
+        const ctxUK = document.getElementById('ukChart').getContext('2d');
+        const ukPredictionIndex = dataUK.date.length - 1;
+
+        const chartUK = new Chart(ctxUK, {
+            type: 'line',
+            data: {
+                labels: dataUK.date,
+                datasets: [
+                    {
+                        label: 'UK Petrol Price (p/L)',
+                        data: dataUK.uk,
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        segment: {
+                            borderDash: ctx => ctx.p1DataIndex === ukPredictionIndex ? [5, 5] : undefined
+                        }
+                    },
+                    {
+                        label: 'US Gas Price ($/gal)',
+                        data: dataUK.us,
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                    },
+                    {
+                        label: 'Brent Crude ($/barrel)',
+                        data: dataUK.brent,
+                        borderColor: '#f39c12',
+                        backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            title: function(context) {
+                                const index = context[0].dataIndex;
+                                if (index === ukPredictionIndex) {
+                                    return 'PREDICTION: ' + context[0].label;
+                                }
+                                return context[0].label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { font: { size: 11 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            font: { size: 10 }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Highlight UK prediction point
+        chartUK.data.datasets[0].pointBackgroundColor = dataUK.uk.map((_, i) => 
+            i === ukPredictionIndex ? '#e74c3c' : '#3498db'
+        );
+        chartUK.data.datasets[0].pointRadius = dataUK.uk.map((_, i) => 
+            i === ukPredictionIndex ? 8 : 4
+        );
+        chartUK.update();
+
+        // US Chart
+        const ctxUS = document.getElementById('usChart').getContext('2d');
+        const usPredictionIndex = dataUS.date.length - 1;
+
+        const chartUS = new Chart(ctxUS, {
+            type: 'line',
+            data: {
+                labels: dataUS.date,
+                datasets: [
+                    {
+                        label: 'US Gas Price ($/gal)',
+                        data: dataUS.us,
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        segment: {
+                            borderDash: ctx => ctx.p1DataIndex === usPredictionIndex ? [5, 5] : undefined
+                        }
+                    },
+                    {
+                        label: 'UK Petrol Price (p/L)',
+                        data: dataUS.uk,
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                    },
+                    {
+                        label: 'Brent Crude ($/barrel)',
+                        data: dataUS.brent,
+                        borderColor: '#f39c12',
+                        backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 13 },
+                        callbacks: {
+                            title: function(context) {
+                                const index = context[0].dataIndex;
+                                if (index === usPredictionIndex) {
+                                    return 'PREDICTION: ' + context[0].label;
+                                }
+                                return context[0].label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { font: { size: 11 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            font: { size: 10 }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Highlight US prediction point
+        chartUS.data.datasets[0].pointBackgroundColor = dataUS.us.map((_, i) => 
+            i === usPredictionIndex ? '#3498db' : '#e74c3c'
+        );
+        chartUS.data.datasets[0].pointRadius = dataUS.us.map((_, i) => 
+            i === usPredictionIndex ? 8 : 4
+        );
+        chartUS.update();
     </script>
 </body>
 </html>
