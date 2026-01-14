@@ -33,8 +33,8 @@ print(f"US gasoline weekly CSV saved to: {us_gas_csv}")
 # ------------------------------------------------------------------
 # 2. Weekly crude oil prices (CSV)
 # ------------------------------------------------------------------
-CRUDE_BRENT_WEEKLY_URL = "https://datahub.io/@olayway/oil-prices/_r/-/data/brent-weekly.csv"
-CRUDE_WTI_WEEKLY_URL = "https://datahub.io/@olayway/oil-prices/_r/-/data/wti-weekly.csv"
+CRUDE_BRENT_WEEKLY_URL = "https://datahub.io/core/oil-prices/_r/-/data/brent-weekly.csv"
+CRUDE_WTI_WEEKLY_URL = "https://datahub.io/core/oil-prices/_r/-/data/wti-weekly.csv"
 
 brent_csv_path = download_file(CRUDE_BRENT_WEEKLY_URL, "brent_weekly.csv")
 wti_csv_path   = download_file(CRUDE_WTI_WEEKLY_URL, "wti_weekly.csv")

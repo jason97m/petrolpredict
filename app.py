@@ -256,8 +256,9 @@ def index():
     recent_df_uk = df_uk.tail(26).copy()
     recent_df_us = df_us.tail(26).copy()
     
-    # Predict for January 12, 2026
-    target_date = datetime(2026, 1, 12)
+    # Predict for the following sunday
+    # target_date = datetime(2026, 1, 12)
+    target_date = datetime.now() + timedelta(days=(6 - datetime.now().weekday()) % 7 or 7)
     
     # UK Prediction
     uk_pred_date, uk_pred_price, uk_rf_pred, uk_lr_pred = predict_uk(target_date)
